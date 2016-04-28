@@ -3,7 +3,7 @@ Generic gulpfile for web projects
 
 ## Installation ##
 First you need to have [NodeJS](https://nodejs.org/en/download/) installed.
-Then download the package.json file of this repository and put it at the root of your project or merge it with your own.
+Then clone this repository and put it's files at the root of your project or merge it with your own.
 
 After that open a terminal inside your project root folder and :
 
@@ -42,7 +42,7 @@ There is seven tasks currently defined in this gulpfile :
  - watch
 Same as above but launches the `build` task instead
 
-All you need is to open a terminal in your projet root directory and enter the following command
+All you need is to open a terminal in your project root directory and enter the following command
 
     gulp watch-dev
     or
@@ -63,17 +63,17 @@ It's an object with three properties containing strings or arrays of strings, wi
     const jsAssets = {
         src: [
             'public/js/**/*.js',
-            '!public/js/**/*.min.js'
+            '!public/js/build/**/*'
         ],
         clean: [
-            'public/js/build/**/*.min.js'
+            'public/js/build/**/*'
         ],
-        dest: 'public/build/js/'
+        dest: 'public/js/build/'
     };
 
-Processes all the files located under the directory `public/js/any-directory/any-filename.js` except the files in `public/js/any-directory/any-filename.min.js`, this to avoid infinite loop by processing newly created files.
+Processes all the files located under the directory `public/js/any-directory/any-filename.js` except the files in `public/js/build/any-directory/any-filename`, this to avoid infinite loop by processing newly created files.
 
-Will put processed files in the directory `public/build/js/` and delete the files matching this pattern `public/js/build/any-directory/any-filename.min.js`
+Will put processed files in the directory `public/js/build/` and delete the files matching this pattern `public/js/build/any-directory/any-filename`
 
 ### Future tasks ###
 I plan to add more task like Less/Sass compilation, babel compilation, concatenation etc

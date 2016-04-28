@@ -33,20 +33,20 @@ const uglify = require('gulp-uglify');
 const rename = require('gulp-rename');
 const sourcemaps = require('gulp-sourcemaps');
 const rev = require('gulp-rev');
-const clean = require('gulp-clean');
+const del = require('del');
 
 const jsAssets = {
     src: [
         'public/js/**/*.js',
-        '!public/js/**/*.min.js'
+        '!public/js/build/**/*'
     ],
     clean: [
-        'public/js/build/**/*.min.js'
+        'public/js/build/**/*'
     ],
-    dest: 'public/build/js/'
+    dest: 'public/js/build/'
 };
 
-function compileJS(dev) {//Javascript files minification task
+function buildJs(dev) {//Javascript files minification task
     var gulpChain = gulp.src(jsAssets.src);
     if (dev) {
         gulpChain = gulpChain.pipe(sourcemaps.init());//Generate source maps under dev mode
@@ -64,17 +64,24 @@ function compileJS(dev) {//Javascript files minification task
     return gulpChain.pipe(gulp.dest(jsAssets.dest));
 }
 
-gulp.task('build-js-dev', function() {
-    compileJS(true);
+gulp.task('build-js-dev', ['clean-js'], function() {
+    return buildJs(true);
 });
 
-gulp.task('build-js', function() {
-    compileJS(false);
+gulp.task('build-js', ['clean-js'], function() {
+    return buildJs(false);
 });
 
-gulp.task('clean-js', function() {
-    //Clean previously generated files firt
-    gulp.src(jsAssets.clean, {read: false}).pipe(clean());
+gulp.task('clean-js', function(callback) {
+    try {
+        //Clean previously generated files firt
+        //and calls callback
+        del(jsAssets.clean).then(function() {
+            callback();
+        });
+    } catch(e) {
+        console.log(e);
+    }
 });
 
 gulp.task('build-dev', ['clean-js', 'build-js-dev']);
@@ -83,7 +90,7 @@ gulp.task('build', ['clean-js', 'build-js']);
 
 gulp.task('default', ['build']);
 
-gulp.task('watch-dev', function() {
+gulp.task('watch-dev', ['build-dev'], function() {
     gulp.watch(jsAssets.src, ['build-dev']);
 });
 
